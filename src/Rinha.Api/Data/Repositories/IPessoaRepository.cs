@@ -2,9 +2,9 @@
 
 public interface IPessoaRepository
 {
-    Task<Pessoa?> GetById(Guid id);
-    Task<IEnumerable<Pessoa>> Search(string termo);
-    Task<int> Count();
-    Task Create(Pessoa pessoa);
-    Task Commit();
+    Task<Pessoa?> GetByIdAsync(Guid id);
+    Task<IEnumerable<Pessoa>> SearchAsync(string termo);
+    Task<int> CountAsync();
+    Task CreateAsync(Pessoa pessoa);
+    Task CommitAsync();
 }

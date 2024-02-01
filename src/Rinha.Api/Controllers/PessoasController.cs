@@ -1,31 +1,39 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Data.Common;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Rinha.Api;
 
 [ApiController]
 [Route("pessoas")]
-public class PessoasController : ControllerBase
+public class PessoasController(IPessoaRepository pessoas) : ControllerBase
 {
-    private readonly IPessoaRepository _pessoas;
-    public PessoasController(IPessoaRepository pessoas)
-    {
-        _pessoas = pessoas;
-    }
+    private readonly IPessoaRepository _pessoas = pessoas;
 
     [HttpPost]
     public async Task<IActionResult> Create(Pessoa pessoa)
     {
         if (!ModelState.IsValid)
-            return BadRequest();
-        await _pessoas.Create(pessoa);
-        await _pessoas.Commit();
-        return Ok();
+            return UnprocessableEntity();
+
+        await _pessoas.CreateAsync(pessoa);
+
+        try
+        {
+            await _pessoas.CommitAsync();
+        }
+        catch(DbUpdateException)
+        {
+            return UnprocessableEntity();
+        }
+
+        return CreatedAtAction(nameof(GetById), new {id = pessoa.Id}, pessoa);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var pessoa = await _pessoas.GetById(id);
+        var pessoa = await _pessoas.GetByIdAsync(id);
         if (pessoa == null)
             return NotFound();
 
@@ -33,16 +41,12 @@ public class PessoasController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Search([FromQuery(Name = "t")] string termo)
-    {
-        return Ok(await _pessoas.Search(termo));
-    }
+    public async Task<IActionResult> Search([FromQuery(Name = "t")] string termo) =>
+        Ok(await _pessoas.SearchAsync(termo));
 
     [HttpGet]
     [Route("contagem-pessoas")]
-    public async Task<IActionResult> Count()
-    {
-        return Ok(await _pessoas.Count());
-    }
+    public async Task<IActionResult> Count() =>
+        Ok(await _pessoas.CountAsync());
 
 }

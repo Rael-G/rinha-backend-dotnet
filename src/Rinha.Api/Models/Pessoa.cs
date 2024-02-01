@@ -10,11 +10,11 @@ public class Pessoa(string apelido, string nome, DateTime nascimento, string[]? 
 
     [Required]
     [MaxLength(32)]
-    public string? Apelido {get; private set;} = apelido;
+    public string Apelido {get; private set;} = apelido;
 
     [Required]
     [MaxLength(100)]
-    public string? Nome {get; private set;} = nome;
+    public string Nome {get; private set;} = nome;
 
     [Required]
     public DateTime Nascimento {get; private set;} = nascimento.ToUniversalTime();
