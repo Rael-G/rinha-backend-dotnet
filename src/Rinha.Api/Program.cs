@@ -9,12 +9,24 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql("Host=localhost;Port=5432;Database=Rinha;Username=rinha;Password=rinha;")
+    options.UseNpgsql("Host=db;Port=5432;Database=Rinha;Username=rinha;Password=rinha;")
 );
 
 builder.Services.AddScoped<IPessoaRepository, PessoaRepository>();
 
 var app = builder.Build();
+
+//Migrate
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    if (context.Database.GetPendingMigrations().Any())
+    {
+        context.Database.Migrate();
+    }
+}
 
 // Configure the HTTP request pipeline.
 app.UseHttpsRedirection();
