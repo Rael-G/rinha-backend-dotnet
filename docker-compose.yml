@@ -11,49 +11,36 @@ services:
       POSTGRES_PASSWORD: rinha 
       POSTGRES_USER: rinha 
       POSTGRES_DB: rinha
-    networks:
-      - rinha-network
+    network_mode: host
     deploy:
       resources:
         limits:
           cpus: '0.75'
           memory: '1.5GB'
 
-  api1:
+  api1: &app
+    restart: always
     image: rinha
     hostname: api1
     build:
       context: .
       dockerfile: src/Rinha.Api/Dockerfile
     #environment:
-    #  - ASPNETCORE_ENVIRONMENT=Development
+    # - ASPNETCORE_ENVIRONMENT=Development
     depends_on: 
       - db
-    networks:
-      - rinha-network
+    network_mode: host
     deploy:
       resources:
         limits:
           cpus: '0.25'
           memory: '0.5GB'
   api2:
-    image: rinha
+    <<: *app
     hostname: api2
-    build:
-      context: .
-      dockerfile: src/Rinha.Api/Dockerfile
-    #environment:
-    #  - ASPNETCORE_ENVIRONMENT=Development
     depends_on: 
       - db
       - api1
-    networks:
-      - rinha-network
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: '0.5GB'
 
   nginx:
     image: nginx:latest
@@ -62,16 +49,9 @@ services:
     depends_on:
       - api1
       - api2
-    ports:
-      - "9999:9999"
-    networks:
-      - rinha-network
+    network_mode: host
     deploy:
       resources:
         limits:
           cpus: '0.25'
           memory: '0.5GB'
-
-networks:
-  rinha-network:
-    driver: bridge
