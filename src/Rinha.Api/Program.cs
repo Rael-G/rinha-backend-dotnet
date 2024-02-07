@@ -8,10 +8,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
+const string CONNECTION = "Host=127.0.0.1;Port=5432;Database=rinha;Username=rinha;Password=rinha;";
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql("Host=127.0.0.1;Port=5432;Database=rinha;Username=rinha;Password=rinha;")
+    options.UseNpgsql(CONNECTION)
 );
-
 builder.Services.AddScoped<IPessoaRepository, PessoaRepository>();
 
 var app = builder.Build();

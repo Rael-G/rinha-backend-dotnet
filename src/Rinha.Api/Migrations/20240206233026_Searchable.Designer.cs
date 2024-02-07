@@ -12,8 +12,8 @@ using Rinha.Api;
 namespace Rinha.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240130224940_initial")]
-    partial class initial
+    [Migration("20240206233026_Searchable")]
+    partial class Searchable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,13 +44,17 @@ namespace Rinha.Api.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("Searchable")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string[]>("Stack")
                         .HasMaxLength(32)
                         .HasColumnType("text[]");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Apelido", "Nome", "Nascimento")
+                    b.HasIndex("Apelido")
                         .IsUnique();
 
                     b.ToTable("Pessoas");

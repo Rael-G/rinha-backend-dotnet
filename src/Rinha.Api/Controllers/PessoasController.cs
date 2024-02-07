@@ -44,8 +44,7 @@ public class PessoasController(IPessoaRepository pessoas) : ControllerBase
     public async Task<IActionResult> Search([FromQuery(Name = "t")] string termo) =>
         Ok(await _pessoas.SearchAsync(termo));
 
-    [HttpGet]
-    [Route("contagem-pessoas")]
+    [HttpGet("contagem-pessoas")] 
     public async Task<IActionResult> Count() =>
         Ok(await _pessoas.CountAsync());
 

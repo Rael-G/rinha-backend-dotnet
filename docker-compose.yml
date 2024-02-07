@@ -38,6 +38,9 @@ services:
   api2:
     <<: *app
     hostname: api2
+    environment:
+    # - ASPNETCORE_ENVIRONMENT=Development
+     - ASPNETCORE_URLS=http://*:3001
     depends_on: 
       - db
       - api1

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Rinha.Api;
 
-[Index(nameof(Apelido), nameof(Nome), nameof(Nascimento), IsUnique = true)]
+[Index(nameof(Apelido), IsUnique = true)]
 public class Pessoa(string apelido, string nome, DateTime nascimento, string[]? stack)
 {
     public Guid Id {get; private set;}
@@ -21,4 +21,10 @@ public class Pessoa(string apelido, string nome, DateTime nascimento, string[]? 
     
     [MaxLength(32)]
     public string[]? Stack {get; private set;} = stack;
+
+    public string Searchable
+    {
+        get { return $"{Nome.ToLower()} {Apelido.ToLower()} {(Stack != null ? string.Join(" ", Stack).ToLower() : string.Empty)}"; }
+        private set {}
+    }
 }

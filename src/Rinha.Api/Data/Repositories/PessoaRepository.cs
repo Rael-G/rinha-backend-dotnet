@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace Rinha.Api;
 
@@ -10,15 +10,31 @@ public class PessoaRepository(ApplicationDbContext context) : IPessoaRepository
     public async Task CreateAsync(Pessoa pessoa) =>
         await _context.Pessoas.AddAsync(pessoa);
 
-    public async Task<Pessoa?> GetByIdAsync(Guid id) =>
-        await _context.Pessoas.Where(p => p.Id == id).FirstOrDefaultAsync();
+    public async Task<PessoaViewModel?> GetByIdAsync(Guid id) =>
+        await _context.Pessoas.Where(p => p.Id == id)
+        .Select(p => new PessoaViewModel
+        {
+            Id = p.Id,
+            Apelido = p.Apelido,
+            Nome = p.Nome,
+            Nascimento = p.Nascimento,
+            Stack = p.Stack
+        })
+        .FirstOrDefaultAsync();
 
-    public async Task<IEnumerable<Pessoa>> SearchAsync(string termo) => await _context.Pessoas
+    public async Task<IEnumerable<PessoaViewModel>> SearchAsync(string termo) => 
+        await _context.Pessoas
             .Where(p =>
-                p.Apelido.Contains(termo) ||
-                p.Nome.Contains(termo) ||
-                (p.Stack != null && p.Stack.Any(s => s.Contains(termo)))
+                p.Searchable.Contains(termo.ToLower())
             )
+            .Select(p => new PessoaViewModel
+            {
+                Id = p.Id,
+                Apelido = p.Apelido,
+                Nome = p.Nome,
+                Nascimento = p.Nascimento,
+                Stack = p.Stack
+            })
             .Take(50)
             .ToListAsync();
 
