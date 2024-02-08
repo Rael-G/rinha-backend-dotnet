@@ -1,5 +1,3 @@
-# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
-
 version: '3.4'
 
 services:
@@ -16,7 +14,7 @@ services:
       resources:
         limits:
           cpus: '0.65'
-          memory: '1.3GB'
+          memory: '1.30GB'
 
   api1: &app
     restart: always
@@ -34,7 +32,7 @@ services:
       resources:
         limits:
           cpus: '0.35'
-          memory: '0.7GB'
+          memory: '0.70GB'
   api2:
     <<: *app
     hostname: api2
@@ -57,4 +55,4 @@ services:
       resources:
         limits:
           cpus: '0.15'
-          memory: '0.3GB'
+          memory: '0.30GB'

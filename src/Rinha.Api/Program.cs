@@ -8,7 +8,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
-const string CONNECTION = "Host=127.0.0.1;Port=5432;Database=rinha;Username=rinha;Password=rinha;";
+const string CONNECTION = "Host=127.0.0.1;Port=5432;Database=rinha;Username=rinha;Password=rinha;Maximum Pool Size=45;";
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(CONNECTION)
 );

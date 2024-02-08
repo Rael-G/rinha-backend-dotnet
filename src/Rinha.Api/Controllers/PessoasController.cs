@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 namespace Rinha.Api;
 
 [ApiController]
-[Route("pessoas")]
 public class PessoasController(IPessoaRepository pessoas) : ControllerBase
 {
     private readonly IPessoaRepository _pessoas = pessoas;
 
     [HttpPost]
+    [Route("pessoas")]
     public async Task<IActionResult> Create(Pessoa pessoa)
     {
         if (!ModelState.IsValid)
@@ -30,7 +30,8 @@ public class PessoasController(IPessoaRepository pessoas) : ControllerBase
         return CreatedAtAction(nameof(GetById), new {id = pessoa.Id}, pessoa);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet]
+    [Route("pessoas/{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
         var pessoa = await _pessoas.GetByIdAsync(id);
@@ -41,10 +42,12 @@ public class PessoasController(IPessoaRepository pessoas) : ControllerBase
     }
 
     [HttpGet]
+    [Route("pessoas")]
     public async Task<IActionResult> Search([FromQuery(Name = "t")] string termo) =>
         Ok(await _pessoas.SearchAsync(termo));
 
-    [HttpGet("contagem-pessoas")] 
+    [HttpGet]
+    [Route("contagem-pessoas")]
     public async Task<IActionResult> Count() =>
         Ok(await _pessoas.CountAsync());
 

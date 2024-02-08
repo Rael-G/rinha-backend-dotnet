@@ -11,16 +11,17 @@ public class PessoaRepository(ApplicationDbContext context) : IPessoaRepository
         await _context.Pessoas.AddAsync(pessoa);
 
     public async Task<PessoaViewModel?> GetByIdAsync(Guid id) =>
-        await _context.Pessoas.Where(p => p.Id == id)
-        .Select(p => new PessoaViewModel
-        {
-            Id = p.Id,
-            Apelido = p.Apelido,
-            Nome = p.Nome,
-            Nascimento = p.Nascimento,
-            Stack = p.Stack
-        })
-        .FirstOrDefaultAsync();
+        await _context.Pessoas
+            .Where(p => p.Id == id)
+            .Select(p => new PessoaViewModel
+            {
+                Id = p.Id,
+                Apelido = p.Apelido,
+                Nome = p.Nome,
+                Nascimento = p.Nascimento,
+                Stack = p.Stack
+            })
+            .FirstOrDefaultAsync();
 
     public async Task<IEnumerable<PessoaViewModel>> SearchAsync(string termo) => 
         await _context.Pessoas
